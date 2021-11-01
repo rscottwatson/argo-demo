@@ -8,7 +8,7 @@ metadata:
 spec:
   project: tooling
   source:
-    path: argo-apps/cert-manager/
+    path: argo-apps/cert-manager
     repoURL: https://github.com/rscottwatson/argo-demo 
     targetRevision: develop
   destination:

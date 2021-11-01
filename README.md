@@ -35,3 +35,8 @@ spec:
   k exec -ti -n default pod/busybox -- nslookup github.com
 
 This showed it was not working so I killed my coredns pod and once that restarted then things started to work again.  I am guessing the core-dns pod got it's config from the old /etc/resolv.conf file.
+
+
+Cert-Manager Kustomize demo
+  https://www.jetstack.io/blog/kustomize-cert-manager/
+  https://github.com/jetstack/kustomize-cert-manager-demo

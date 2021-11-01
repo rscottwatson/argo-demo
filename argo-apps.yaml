@@ -1,0 +1,24 @@
+---
+
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: tooling
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: tooling
+  source:
+    repoURL: https://github.com/rscottwatson/argo-demo.git
+    targetRevision: HEAD
+    path: tooling
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: argocd
+  syncPolicy:
+    automated:
+      selfHeal: true
+      prune: true
+
+---

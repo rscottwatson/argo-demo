@@ -13,3 +13,25 @@ So change /etc/resolv.conf to 8.8.8.8 and then
 
 sudo systemctl stop systemd-resolved
 sudo systemctl disable systemd-resolved
+
+I was unable to resolve a hostname from a pod.  So I created a busybox pod to test.
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: busybox
+  namespace: default
+spec:
+  containers:
+  - image: busybox
+    command:
+      - sleep
+      - "99999"
+    imagePullPolicy: IfNotPresent
+    name: busybox
+  restartPolicy: Always
+
+  Then ran
+  k exec -ti -n default pod/busybox -- nslookup github.com
+
+This showed it was not working so I killed my coredns pod and once that restarted then things started to work again.  I am guessing the core-dns pod got it's config from the old /etc/resolv.conf file.

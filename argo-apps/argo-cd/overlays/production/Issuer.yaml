@@ -5,10 +5,10 @@ metadata:
   namespace: argocd 
 spec:
   acme:
-    server: https://acme-v02.api.letsencrypt.org/directory
+    server: https://acme-staging-v02.api.letsencrypt.org/directory
     email: rscottwatson@gmail.com
     privateKeySecretRef:
-      name: letsencrypt-production 
+      name: letsencrypt-staging 
     solvers:
     # An empty 'selector' means that this solver matches all domains
     - selector: {}

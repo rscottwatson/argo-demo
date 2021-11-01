@@ -2,18 +2,16 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
 bases:
-- github.com/argoproj/argo-cd/manifests/cluster-install?ref=v2.1.5
+- ../../base
 
 resources:
-- namespace.yaml
+- IngressLetsEncrypt.yaml
+- Issuer.yaml
 
 namespace: argocd
 
-# patchesStrategicMerge:
-# - argocd-server.yaml    # allow HTTP until we have things setup.
-
-# patchesStrategicMerge:
-# - argocd-server.yaml    # allow HTTP until we have things setup.
+patchesStrategicMerge:
+- argocd-server.yaml  
 
 # additional resources like ingress rules, cluster and repository secrets.
 # resources:

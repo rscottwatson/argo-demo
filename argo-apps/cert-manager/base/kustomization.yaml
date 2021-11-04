@@ -1,10 +1,7 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
-# bases:
-# - github.com/jetstack/cert-manager/releases/download/v1.6.1/cert-manager.yaml
-# when using bases I get this error
-# Error: accumulating resources: accumulation err='accumulating resources from 'github.com/jetstack/cert-manager/releases/download/v1.6.1/cert-manager.crds.yaml': evalsymlink failure on '/Users/i840040/Documents/local/argo/argo-demo/argo-apps/cert-manager/base/github.com/jetstack/cert-manager/releases/download/v1.6.1/cert-manager.crds.yaml' : lstat /Users/i840040/Documents/local/argo/argo-demo/argo-apps/cert-manager/base/github.com: no such file or directory': evalsymlink failure on '/private/var/folders/c9/5ljrd59n7q32xq675wgp89lc0000gn/T/kustomize-295339959/releases/download/v1.6.1/cert-manager.crds.yaml' : lstat /private/var/folders/c9/5ljrd59n7q32xq675wgp89lc0000gn/T/kustomize-295339959/releases: no such file or directory
-
 resources:
 - cert-manager-v1.6.1.yaml
+# - ClusterIssuerStaging.yaml
+# - ClusterIssuerProduction.yaml

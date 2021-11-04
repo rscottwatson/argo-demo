@@ -1,6 +1,15 @@
 # argo-demo
 Experiment with argo and various tools.
 
+minikube start --driver=hyperkit --addons="ingress"
+
+Once you enable the ingres controller with the addon
+you need to patch it so that argocd can use the tls certificate.
+src: https://github.com/kubernetes/minikube/issues/6403#issuecomment-888754010
+
+minikube kubectl -- patch deployment -n ingress-nginx ingress-nginx-controller -p='{"spec":{"template":{"spec":{"containers":[{"name":"controller","args":["/nginx-ingress-controller","--ingress-class=nginx","--configmap=$(POD_NAMESPACE)/ingress-nginx-controller","--report-node-internal-ip-address","--tcp-services-configmap=$(POD_NAMESPACE)/tcp-services","--udp-services-configmap=$(POD_NAMESPACE)/udp-services","--validating-webhook=:8443","--validating-webhook-certificate=/usr/local/certificates/cert","--validating-webhook-key=/usr/local/certificates/key","--enable-ssl-passthrough"]}]}}}}'
+
+you can also just edit the deployment and change the args list
 
 Get the default password from 
 
@@ -9,10 +18,39 @@ kubectl get secret -n argocd argocd-initial-admin-secret  -o jsonpath={.data.pas
 Issues with minikube on work laptop.
 Network manager kept trying to revert my /etc/resovl.conf to something that didn't allow me to resolv names with as my actual dns server is dnscrypt-proxy and that won't forward requests.
 
-So change /etc/resolv.conf to 8.8.8.8 and then
 
+So change /etc/resolv.conf to 8.8.8.8 and then
 sudo systemctl stop systemd-resolved
 sudo systemctl disable systemd-resolved
+
+I had to restart my codedns deployment
+kubectl rollout restart deployment coredns -n kube-system
+I also restarted the kubelet for good measure but I am not actually sure I had to do this.
+sudo systemctl restart kubelet
+
+
+
+If you are using dnsmasq you can fix the problem by adding a listen-address to your dnsmasq.conf file
+https://minikube.sigs.k8s.io/docs/drivers/hyperkit/#local-dns-server-conflict
+
+This doesn't seem to work!!!
+Another option is to use socat like this
+sudo socat UDP4-RECVFROM:53,bind=192.168.64.1,fork UDP4-SENDTO:127.0.0.1:53
+( 192.168.64.1 is the bridge that minikube is using not sure how to find out which bridge this is 
+ on my office laptop this bridge was 192.168.78.1 )
+
+ sudo launchctl unload -w /System/Library/LaunchDaemons/com.apple.mDNSresponder.plist
+ sudo launchctl load -w /System/Library/LaunchDaemons/com.apple.mDNSresponder.plist
+
+unload and load are deprecated should use enable or disable 
+
+
+Since I am using my home network I need to forward from my router to my computer.
+The from my computer I need to forward the traffic the minikube cluster on the ports that my
+nginx-ingress is running on.
+
+socat tcp-listen:8443,reuseaddr,fork tcp:192.168.78.9:32480  &
+socat tcp-listen:9080,reuseaddr,fork tcp:192.168.78.9:31706  &
 
 I was unable to resolve a hostname from a pod.  So I created a busybox pod to test.
 

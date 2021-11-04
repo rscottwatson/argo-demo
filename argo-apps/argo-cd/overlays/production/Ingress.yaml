@@ -1,4 +1,4 @@
-apiVersion: extensions/v1beta1
+apiVersion: extensions/v1
 kind: Ingress
 metadata:
   name: argo-cd-ui
@@ -6,17 +6,20 @@ metadata:
     ingress.kubernetes.io/proxy-body-size: 100M
     kubernetes.io/ingress.class: "nginx"
     ingress.kubernetes.io/app-root: "/"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/ssl-passthrough: "true"
 spec:
   tls:
   - hosts:
     - argocd.192.222.186.105.nip.io
-    secretName: argocd-server-tls
+    secretName: argocd-secret
   rules:
   - host: argocd.192.222.186.105.nip.io
     http:
       paths:
       - path: /
         backend:
-          serviceName: argocd-server
-          servicePort: http
+          service:
+            name: argocd-server
+            port: http
 

@@ -1,4 +1,4 @@
-# argo-demo
+# My ARGO-DEMO repo
 Experiment with argo and various tools.
 
 minikube start --driver=hyperkit --addons="ingress"
@@ -8,6 +8,12 @@ you need to patch it so that argocd can use the tls certificate.
 src: https://github.com/kubernetes/minikube/issues/6403#issuecomment-888754010
 
 minikube kubectl -- patch deployment -n ingress-nginx ingress-nginx-controller -p='{"spec":{"template":{"spec":{"containers":[{"name":"controller","args":["/nginx-ingress-controller","--ingress-class=nginx","--configmap=$(POD_NAMESPACE)/ingress-nginx-controller","--report-node-internal-ip-address","--tcp-services-configmap=$(POD_NAMESPACE)/tcp-services","--udp-services-configmap=$(POD_NAMESPACE)/udp-services","--validating-webhook=:8443","--validating-webhook-certificate=/usr/local/certificates/cert","--validating-webhook-key=/usr/local/certificates/key","--enable-ssl-passthrough"]}]}}}}'
+
+Looks like this get changed on each restart of the minikube instance and the change it not persisted.
+So just edit the deployment and add the option
+--enable-ssl-passthrough
+to the arguments of the deployment ingress-nginx-controller
+in the file /etc/kuberentes/addons/ingress-deploy.yaml
 
 you can also just edit the deployment and change the args list
 
@@ -29,6 +35,22 @@ I also restarted the kubelet for good measure but I am not actually sure I had t
 sudo systemctl restart kubelet
 
 
+Another solution
+sudo su -
+cat << EOF >  /var/lib/boot2docker/bootlocal.sh
+echo "8.8.8.8" >> /etc/systemd/resolved.conf 
+systemctl restart systemd-resolved
+EOF
+chmod 755  /var/lib/boot2docker/bootlocal.sh
+
+Need to see if I need to restart coredns.
+
+# Another way to run a command on startup of the minikube instance
+minikube start && ssh -t -i ~/.minikube/machines/minikube/id_rsa docker@$(minikube ip) "sudo mount --bind /hosthome/<user> /home/<user>"
+
+# TO run kubectl command while ssh'd into the minikube VM
+export KUBECONFIG=/var/lib/minikube/kubeconfig 
+/var/lib/minikube/binaries/v1.22.2/kubectl apply -f /etc/kubernetes/addons/ingress-deploy.yaml
 
 If you are using dnsmasq you can fix the problem by adding a listen-address to your dnsmasq.conf file
 https://minikube.sigs.k8s.io/docs/drivers/hyperkit/#local-dns-server-conflict
@@ -78,3 +100,9 @@ This showed it was not working so I killed my coredns pod and once that restarte
 Cert-Manager Kustomize demo
   https://www.jetstack.io/blog/kustomize-cert-manager/
   https://github.com/jetstack/kustomize-cert-manager-demo
+
+
+## Sample apps to test deployments.
+
+This is from the book Kubernetes Up and Running.
+https://github.com/kubernetes-up-and-running/kuard

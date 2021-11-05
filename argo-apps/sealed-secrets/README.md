@@ -9,7 +9,10 @@ or
 wget https://github.com/bitnami-labs/sealed-secrets/releases/download/v0.16.0/kubeseal-linux-amd64 -O kubeseal
 sudo install -m 755 kubeseal /usr/local/bin/kubeseal
 
+
+
 My initial attempt of using a custom namespace failed.
+
 The controller failed to start and I got the following log messages
 
 controller version: v0.16.0
@@ -19,3 +22,8 @@ panic: secrets is forbidden: User "system:serviceaccount:sealed-secrets:sealed-s
 goroutine 1 [running]:
 main.main()
     /home/travis/gopath/src/github.com/bitnami-labs/sealed-secrets/cmd/controller/main.go:271 +0x211
+
+I think this may have been because my k8s version is 1.22.2 and the API version for RBAC is now
+rbac.authorization.k8s.io/v1 
+and the controller YAML file is using v1beta1.
+So I created a patch in the kustomization file and that seems to be working.

@@ -7,3 +7,14 @@ resources:
 - namespace.yaml
 - https://github.com/bitnami-labs/sealed-secrets/releases/download/v0.16.0/controller.yaml
 
+# The current version uses a api version that isn't supported in the latest kubernetes release
+patches:
+- patch: |-
+    - op: replace
+      path: "/apiVersion"
+      value: rbac.authorization.k8s.io/v1
+  target:
+    group: rbac.authorization.k8s.io
+    version: v1beta1
+
+

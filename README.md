@@ -186,6 +186,7 @@ https://github.com/kubernetes-up-and-running/kuard
 ## My own Q&A
 | Question | Answer |
 | --- | ---------------------------------------------- |
+| which namespace should the argo app be created in? |
 | 
 
 ## Links

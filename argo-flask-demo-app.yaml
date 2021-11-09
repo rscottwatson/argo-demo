@@ -6,14 +6,14 @@ metadata:
   namespace: argocd
   annotations:
     argocd-image-updater.argoproj.io/image-list: scottwatson/argocd-flask-demo-repo:^0.0
-    argocd-image-updater.argoproj.io/write-back-method: git:secret:default/git-creds
-
+    argocd-image-updater.argoproj.io/write-back-method: git:secret:argocd/git-creds
+    #argocd-image-updater.argoproj.io/write-back-method: git
   finalizers:
     - resources-finalizer.argocd.argoproj.io
 spec:
   project: production
   source:
-    repoURL: https://github.com/rscottwatson/argocd-flask-demo-deploy.git
+    repoURL: git@github.com:rscottwatson/argocd-flask-demo-deploy.git
     targetRevision: main
     path: ./overlays/production
   destination:
@@ -22,5 +22,5 @@ spec:
     namespace: default
   syncPolicy:
     automated:
-      selfHeal: true
+      selfHeal: false
       prune: true

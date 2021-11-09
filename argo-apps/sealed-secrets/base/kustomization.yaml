@@ -18,3 +18,5 @@ patches:
     version: v1beta1
 
 
+patchesStrategicMerge:
+  - controller_args.yaml

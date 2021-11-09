@@ -11,6 +11,6 @@ spec:
         command: 
         - controller
         args: 
-        - ---update-status
+        - --update-status
 
 

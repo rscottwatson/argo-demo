@@ -12,7 +12,7 @@ spec:
     repoURL: https://github.com/rscottwatson/argo-demo 
     targetRevision: develop
   destination:
-    namespace: argo-imageupdater
+    namespace: argocd 
     server: https://kubernetes.default.svc
   syncPolicy:
     automated:

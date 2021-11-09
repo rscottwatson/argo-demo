@@ -1,0 +1,26 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: argocd-flask-demo
+  namespace: argocd
+  annotations:
+    argocd-image-updater.argoproj.io/image-list: scottwatson/argocd-flask-demo-repo:^0.0
+    argocd-image-updater.argoproj.io/write-back-method: git:secret:default/git-creds
+
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: production
+  source:
+    repoURL: https://github.com/rscottwatson/argocd-flask-demo-deploy.git
+    targetRevision: main
+    path: ./overlays/production
+  destination:
+    server: https://kubernetes.default.svc
+    #namespace: argocd-flask-demo 
+    namespace: default
+  syncPolicy:
+    automated:
+      selfHeal: true
+      prune: true

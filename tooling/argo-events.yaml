@@ -12,6 +12,7 @@ spec:
     repoURL: https://github.com/rscottwatson/argo-demo 
     targetRevision: develop
   destination:
+    namespace: argo-events
     server: https://kubernetes.default.svc
   syncPolicy:
     automated:

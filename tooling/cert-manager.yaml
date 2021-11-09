@@ -12,6 +12,7 @@ spec:
     repoURL: https://github.com/rscottwatson/argo-demo 
     targetRevision: develop
   destination:
+    namespace: cert-manager
     server: https://kubernetes.default.svc
   syncPolicy:
     automated:

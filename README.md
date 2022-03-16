@@ -65,7 +65,7 @@ minikube shh
 sudo su -
 
 cat << EOF >  /var/lib/boot2docker/bootlocal.sh
-echo "8.8.8.8" >> /etc/systemd/resolved.conf 
+echo "DNS=8.8.8.8" >> /etc/systemd/resolved.conf 
 systemctl restart systemd-resolved
 EOF
 
